@@ -3,11 +3,37 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle, Clock } from 'lucide-react';
 import { KioskHeader } from './KioskHeader';
 
+type Language = 'de' | 'it';
+
 interface ThankYouProps {
   onRestart: () => void;
+  language: Language;
+  onLanguageChange: (language: Language) => void;
+  onExit: () => void;
 }
 
-export const ThankYou: React.FC<ThankYouProps> = ({ onRestart }) => {
+const translations = {
+  de: {
+    title: 'Danke für Ihre Zahlung!',
+    time: 'Sie haben jetzt 15 Minuten Zeit, um den Parkplatz zu verlassen.',
+    exit: 'Beenden / Exit / Uscita',
+    autoExit: 'Automatisches Beenden in wenigen Sekunden...'
+  },
+  it: {
+    title: 'Grazie per il pagamento!',
+    time: 'Hai ora 15 minuti per lasciare il parcheggio.',
+    exit: 'Esci / Exit / Beenden',
+    autoExit: 'Uscita automatica tra pochi secondi...'
+  }
+};
+
+export const ThankYou: React.FC<ThankYouProps> = ({ 
+  onRestart, 
+  language, 
+  onLanguageChange, 
+  onExit 
+}) => {
+  const t = translations[language];
   useEffect(() => {
     const timer = setTimeout(() => {
       onRestart();
@@ -18,22 +44,25 @@ export const ThankYou: React.FC<ThankYouProps> = ({ onRestart }) => {
 
   return (
     <div className="bg-gradient-kiosk rounded-3xl shadow-kiosk animate-fade-in-up">
-      <KioskHeader />
+      <KioskHeader 
+        language={language} 
+        onLanguageChange={onLanguageChange}
+        onExit={onExit}
+      />
       
       <div className="px-8 pb-8 text-center">
         <div className="mb-8">
-          <CheckCircle className="w-20 h-20 text-primary mx-auto mb-6 animate-pulse" />
+          <CheckCircle className="w-24 h-24 text-primary mx-auto mb-6 animate-pulse" />
           
           <h2 className="text-3xl font-bold text-primary mb-6">
-            Danke für Ihre Zahlung!
+            {t.title}
           </h2>
           
           <div className="bg-white rounded-lg p-6 shadow-inner mb-6">
-            <div className="flex items-center justify-center gap-3 text-lg">
-              <Clock className="w-6 h-6 text-warning" />
+            <div className="flex items-center justify-center gap-3 text-xl">
+              <Clock className="w-8 h-8 text-warning" />
               <span>
-                Sie haben jetzt <strong>15 Minuten</strong> Zeit,<br />
-                um den Parkplatz zu verlassen.
+                {t.time}
               </span>
             </div>
           </div>
@@ -41,14 +70,15 @@ export const ThankYou: React.FC<ThankYouProps> = ({ onRestart }) => {
         
         <div className="space-y-4">
           <Button 
-            className="w-full h-12 text-lg bg-gradient-primary"
+            size="lg"
+            className="w-full h-16 text-xl bg-gradient-primary"
             onClick={onRestart}
           >
-            Beenden / Exit / Uscita
+            {t.exit}
           </Button>
           
           <p className="text-sm text-muted-foreground">
-            Automatisches Beenden in wenigen Sekunden...
+            {t.autoExit}
           </p>
         </div>
       </div>
