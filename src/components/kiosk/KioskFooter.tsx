@@ -9,7 +9,7 @@ const translations = {
   },
   it: {
     location: 'Mautlüggler See - P1 - Wald',
-    hotline: 'Assistenza +39 0471 143 05 02'
+    hotline: 'Assistenza +39 0471 143 0* **'
   }
 };
 
