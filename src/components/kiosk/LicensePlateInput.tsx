@@ -124,6 +124,9 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
     }, 0);
   };
 
+  const isMobile = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
+
+
   const handleProposalClick = () => {
     onNext('license-confirm', { licensePlate: demoPlate, country: selectedCountry });
   };
@@ -209,20 +212,22 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
             {/* Step 2 - Plate Input */}
             <div className="text-center w-full sm:w-auto">
               <div className="text-lg font-bold mb-2">{t.step2}</div>
-              <Input
-                ref={inputRef}
-                value={plate}
-                onChange={handleInputChange}
-                onSelect={handleInputSelect}
-                className="
-                  w-full max-w-xs sm:w-64
-                  h-14 sm:h-16
-                  text-xl sm:text-2xl
-                  text-center font-mono border-2 border-accent
-                "
-                placeholder={selectedCountry === 'IT' ? 'AB123CD' : 'AB-123-CD'}
-                maxLength={12}
-              />
+                <Input
+                  ref={inputRef}
+                  value={plate}
+                  onChange={handleInputChange}
+                  onSelect={handleInputSelect}
+                  className="
+                    w-full max-w-xs sm:w-64
+                    h-14 sm:h-16
+                    text-xl sm:text-2xl
+                    text-center font-mono border-2 border-accent
+                  "
+                  placeholder={selectedCountry === 'IT' ? 'AB123CD' : 'AB-123-CD'}
+                  maxLength={12}
+                  readOnly={isMobile}
+                />
+
             </div>
           </div>
         </div>
