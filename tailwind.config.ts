@@ -107,17 +107,18 @@ export default {
 				},
 				'zoom-to-screen': {
 					'0%': {
-						transform: 'scale(1)',
-						opacity: '1'
+					  transform: 'scale(1) translateY(0)',
+					  opacity: '1'
 					},
-					'50%': {
-						transform: 'scale(1.2)',
+					'30%': {
+					  transform: 'scale(1.25) translateY(180px)',
+					  opacity: '0.85'
 					},
 					'100%': {
-						transform: 'scale(8)',
-						opacity: '0'
+					  transform: 'scale(2.5) translateY(270px)',
+					  opacity: '0'
 					}
-				},
+				  },									
 				'fade-in-up': {
 					'0%': {
 						opacity: '0',

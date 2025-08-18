@@ -17,11 +17,19 @@ export const PersistentCarReference: React.FC<PersistentCarReferenceProps> = ({ 
           <div className="absolute -bottom-0.5 left-1 w-1.5 h-1.5 bg-gray-800 rounded-full"></div>
           <div className="absolute -bottom-0.5 right-1 w-1.5 h-1.5 bg-gray-800 rounded-full"></div>
         </div>
-        {/* License plate */}
-        <div className="bg-white border border-gray-400 px-2 py-1 rounded-sm text-xs font-bold">
+        {/* Italy flag + License plate */}
+        <div className="bg-white border border-gray-400 px-2 py-1 rounded-sm text-xs font-bold flex items-center gap-1">
+          <span className="text-lg" role="img" aria-label="Italy flag">🇮🇹</span>
           {licensePlate}
         </div>
       </div>
     </div>
   );
 };
+
+
+
+
+
+
+

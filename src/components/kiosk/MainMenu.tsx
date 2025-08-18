@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, Car } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { KioskHeader } from './KioskHeader';
+import { KioskFooter } from './KioskFooter';
 
 type Language = 'de' | 'it';
 
@@ -17,31 +18,27 @@ const translations = {
     title: 'PARKEN BEZAHLEN',
     leaving: 'ICH FAHRE WEG',
     dayTicket: 'TAGESTICKET',
-    location: 'Mautlüggler See - P1 - Wald',
-    hotline: 'Störungshotline +39 0471 143 05 02'
   },
   it: {
     title: 'PAGARE PARCHEGGIO',
     leaving: 'STO USCENDO',
     dayTicket: 'BIGLIETTO GIORNALIERO',
-    location: 'Mautlüggler See - P1 - Wald',
-    hotline: 'Assistenza +39 0471 143 05 02'
   }
 };
 
 export const MainMenu: React.FC<MainMenuProps> = ({ onNext, language, onLanguageChange, onExit }) => {
   const t = translations[language];
+
   return (
-    <div className="bg-gradient-kiosk rounded-3xl shadow-kiosk animate-fade-in-up">
+    <div className="h-full flex flex-col animate-fade-in-up">
       <KioskHeader language={language} onLanguageChange={onLanguageChange} onExit={onExit} />
-      
-      <div className="px-8 pb-8">
+      {/* Main content centered and spread */}
+      <div className="flex-1 flex flex-col justify-center px-8 pb-8">
         <h1 className="text-4xl font-bold text-center text-primary mb-12">
           {t.title}
         </h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Button 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+          <Button
             variant="default"
             size="lg"
             className="h-32 bg-gradient-button hover:bg-accent/90 shadow-button text-xl font-semibold"
@@ -52,8 +49,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({ onNext, language, onLanguage
               <span>{t.leaving}</span>
             </div>
           </Button>
-          
-          <Button 
+          <Button
             variant="default"
             size="lg"
             className="h-32 bg-gradient-button hover:bg-accent/90 shadow-button text-xl font-semibold opacity-75"
@@ -65,14 +61,9 @@ export const MainMenu: React.FC<MainMenuProps> = ({ onNext, language, onLanguage
             </div>
           </Button>
         </div>
-        
-        <div className="flex justify-between text-xs text-muted-foreground">
-          <span>{t.location}</span>
-          <span>
-            {t.hotline}
-          </span>
-        </div>
       </div>
+      {/* Footer always at the bottom */}
+      <KioskFooter language={language} />
     </div>
   );
 };

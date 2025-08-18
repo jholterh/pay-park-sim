@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { KioskHeader } from './KioskHeader';
+import { LicensePlateDisplay } from './LicensePlateDisplay';
+import { KioskFooter } from './KioskFooter';
 
 type Language = 'de' | 'it';
 
@@ -17,25 +19,17 @@ interface LicensePlateMismatchProps {
 
 const translations = {
   de: {
-    title: 'Kennzeichen stimmt nicht überein',
-    subtitle: 'Das eingegebene Kennzeichen stimmt nicht mit dem gescannten überein.',
-    scanned: 'Gescanntes Kennzeichen:',
-    entered: 'Eingegebenes Kennzeichen:',
-    question: 'Sind Sie sicher, dass dies korrekt ist?',
-    countryCheck: 'Bitte prüfen Sie auch das ausgewählte Land.',
+    title: 'Sind Sie sicher, dass dies Ihr Kennzeichen ist?',
+    warning: 'Bitte prüfen Sie Ihre Eingabe und das ausgewählte Land.',
     back: 'Zurück',
-    continue: 'Fortfahren'
+    continue: 'Ja, weiter',
   },
   it: {
-    title: 'Targa non corrispondente',
-    subtitle: 'La targa inserita non corrisponde a quella scansionata.',
-    scanned: 'Targa scansionata:',
-    entered: 'Targa inserita:',
-    question: 'Sei sicuro che sia corretta?',
-    countryCheck: 'Verifica anche il paese selezionato.',
-    back: 'Indietro',
-    continue: 'Continua'
-  }
+    title: 'Sei sicuro che questa sia la tua targa?',
+    warning: 'Verifica la tua inserimento e il paese selezionato.',
+    back: 'Torna indietro',
+    continue: 'Sì, continua',
+  },
 };
 
 export const LicensePlateMismatch: React.FC<LicensePlateMismatchProps> = ({
@@ -46,83 +40,51 @@ export const LicensePlateMismatch: React.FC<LicensePlateMismatchProps> = ({
   onBack,
   language,
   onLanguageChange,
-  onExit
+  onExit,
 }) => {
   const t = translations[language];
 
   return (
-    <div className="bg-gradient-kiosk rounded-3xl shadow-kiosk animate-fade-in-up">
-      <KioskHeader 
-        showBack 
-        onBack={onBack} 
-        language={language} 
+    <div className="h-full flex flex-col animate-fade-in-up">
+      <KioskHeader
+        showBack
+        onBack={onBack}
+        language={language}
         onLanguageChange={onLanguageChange}
         onExit={onExit}
       />
-      
-      <div className="px-8 pb-8 text-center">
-        <h2 className="text-2xl font-bold text-accent mb-4">
-          {t.title}
-        </h2>
-        
-        <p className="text-lg text-muted-foreground mb-8">
-          {t.subtitle}
-        </p>
-        
-        <div className="space-y-6 mb-8">
-          <div>
-            <p className="text-sm font-semibold mb-2">{t.scanned}</p>
-            <div className="bg-white border-4 border-gray-800 rounded-lg p-4 mx-auto max-w-xs">
-              <div className="text-3xl font-mono font-bold text-gray-800">
-                {scannedPlate}
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <p className="text-sm font-semibold mb-2">{t.entered}</p>
-            <div className="bg-white border-4 border-gray-800 rounded-lg p-4 mx-auto max-w-xs">
-              <div className="text-3xl font-mono font-bold text-gray-800">
-                {licensePlate}
-              </div>
-              <div className="flex justify-center items-center gap-2 mt-2">
-                <div className="w-6 h-4 bg-red-500 rounded-sm"></div>
-                <div className="w-6 h-4 bg-white border rounded-sm"></div>
-                <div className="w-6 h-4 bg-green-500 rounded-sm"></div>
-                <span className="ml-2 font-semibold text-sm">{country}</span>
-              </div>
+
+      <div className="px-8 pb-8 text-center flex-1 flex flex-col justify-center">
+        <h2 className="text-2xl font-bold text-accent mb-8">{t.title}</h2>
+        <div className="flex flex-col items-center gap-4 mb-6">
+          <LicensePlateDisplay licensePlate={licensePlate} country={country} />
+          <div className="w-full max-w-md mx-auto mt-4">
+            <div className="bg-orange-100 border border-orange-400 text-orange-800 text-base font-semibold rounded-lg px-4 py-3 shadow mt-2 flex items-center">
+              <span className="text-3xl font-bold text-orange-500 mr-4 ml-1">!</span>
+              <span>{t.warning}</span>
             </div>
           </div>
         </div>
-
-        <div className="mb-6 p-4 bg-warning/20 rounded-lg">
-          <p className="text-warning font-semibold mb-2">
-            {t.question}
-          </p>
-          <p className="text-sm text-warning/80">
-            {t.countryCheck}
-          </p>
-        </div>
-
-        <div className="flex justify-center gap-6">
-          <Button 
-            variant="outline"
+        <div className="flex justify-center gap-6 mt-8">
+          <Button
             size="lg"
-            className="w-32 h-12 text-lg"
+            className="w-40 h-14 text-lg bg-orange-500 hover:bg-orange-600 text-white font-bold"
             onClick={onBack}
           >
             ← {t.back}
           </Button>
-          
-          <Button 
+          <Button
+            variant="outline"
             size="lg"
-            className="w-32 h-12 text-lg bg-gradient-primary"
+            className="w-40 h-14 text-lg"
             onClick={() => onNext('arrival-time')}
           >
             {t.continue} →
           </Button>
         </div>
       </div>
+      {/* Footer always at the bottom */}
+      <KioskFooter language={language} />
     </div>
   );
 };

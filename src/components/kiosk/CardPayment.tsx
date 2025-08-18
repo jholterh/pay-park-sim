@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { CreditCard } from 'lucide-react';
 import { KioskHeader } from './KioskHeader';
+import { KioskFooter } from './KioskFooter';
 
 type Language = 'de' | 'it';
 
@@ -40,20 +41,20 @@ export const CardPayment: React.FC<CardPaymentProps> = ({
   }, [onNext]);
 
   return (
-    <div className="bg-gradient-kiosk rounded-3xl shadow-kiosk animate-fade-in-up">
-      <KioskHeader 
-        showBack 
+    <div className="h-full flex flex-col animate-fade-in-up">
+      <KioskHeader
+        showBack
         onBack={onBack}
-        language={language} 
+        language={language}
         onLanguageChange={onLanguageChange}
         onExit={onExit}
       />
-      
-      <div className="px-8 pb-8 text-center">
+  
+      <div className="px-8 pb-8 text-center flex-1 flex flex-col justify-center">
         <h2 className="text-2xl font-bold text-accent mb-8">
           {t.title}
         </h2>
-        
+  
         <div className="mb-8 relative">
           <div className="animate-kiosk-glow bg-primary/10 rounded-2xl p-8 mb-6">
             <div className="flex justify-center mb-4">
@@ -64,21 +65,24 @@ export const CardPayment: React.FC<CardPaymentProps> = ({
                 <CreditCard className="w-32 h-32 text-primary absolute -top-4 -left-4 animate-pulse" />
               </div>
             </div>
-            
+  
             <div className="w-full h-20 bg-primary rounded-lg mb-6 flex items-center justify-center">
               <div className="w-16 h-12 bg-white rounded opacity-30 animate-pulse"></div>
             </div>
-            
+  
             <div className="flex justify-center">
               <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           </div>
-          
+  
           <p className="text-xl text-muted-foreground">
             {t.tip}
           </p>
         </div>
       </div>
+  
+      {/* Footer always at the bottom */}
+      <KioskFooter language={language} />
     </div>
   );
-};
+  };  

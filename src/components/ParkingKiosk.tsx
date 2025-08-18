@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import { EntryAnimation } from './kiosk/EntryAnimation';
 import { LandingAnimation } from './kiosk/LandingAnimation';
 import { MainMenu } from './kiosk/MainMenu';
@@ -11,19 +12,28 @@ import { CardPayment } from './kiosk/CardPayment';
 import { ThankYou } from './kiosk/ThankYou';
 import { PersistentCarReference } from './kiosk/PersistentCarReference';
 
-type KioskStep = 
+type KioskStep =
   | 'entry-animation'
-  | 'landing' 
-  | 'main-menu' 
-  | 'license-input' 
+  | 'landing'
+  | 'main-menu'
+  | 'license-input'
   | 'license-confirm'
   | 'license-mismatch'
-  | 'arrival-time' 
-  | 'payment-selection' 
-  | 'card-payment' 
+  | 'arrival-time'
+  | 'payment-selection'
+  | 'card-payment'
   | 'thank-you';
 
 type Language = 'de' | 'it';
+
+const getDefaultArrivalTime = () => {
+  const now = new Date();
+  const threeHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000);
+  const minutes = threeHoursAgo.getMinutes();
+  const roundedMinutes = Math.floor(minutes / 15) * 15;
+  threeHoursAgo.setMinutes(roundedMinutes, 0, 0);
+  return threeHoursAgo;
+};
 
 export const ParkingKiosk: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<KioskStep>('entry-animation');
@@ -31,8 +41,7 @@ export const ParkingKiosk: React.FC = () => {
   const [scannedPlate, setScannedPlate] = useState('');
   const [country, setCountry] = useState('IT');
   const [language, setLanguage] = useState<Language>('de');
-  const [arrivalTime, setArrivalTime] = useState(new Date());
-  const [parkingDuration, setParkingDuration] = useState({ hours: 2, minutes: 35 });
+  const [arrivalTime, setArrivalTime] = useState<Date>(() => getDefaultArrivalTime());
   const [totalCost] = useState(5.00);
 
   const isDemoPlate = licensePlate === scannedPlate;
@@ -61,14 +70,7 @@ export const ParkingKiosk: React.FC = () => {
     setCountry('IT');
   };
 
-  const getDefaultArrivalTime = () => {
-    const now = new Date();
-    const threeHoursAgo = new Date(now.getTime() - 3 * 60 * 60 * 1000);
-    const minutes = threeHoursAgo.getMinutes();
-    const roundedMinutes = Math.floor(minutes / 15) * 15;
-    threeHoursAgo.setMinutes(roundedMinutes, 0, 0);
-    return threeHoursAgo;
-  };
+  const resetArrivalTime = () => setArrivalTime(getDefaultArrivalTime());
 
   const handleNext = (step: KioskStep, data?: any) => {
     if (data) {
@@ -112,10 +114,20 @@ export const ParkingKiosk: React.FC = () => {
       case 'landing':
         return <LandingAnimation />;
       case 'main-menu':
-        return <MainMenu onNext={handleNext} language={language} onLanguageChange={handleLanguageChange} onExit={handleExit} />;
+        return (
+          <MainMenu
+            onNext={(step, data) => {
+              if (step === 'license-input') resetArrivalTime();
+              handleNext(step, data);
+            }}
+            language={language}
+            onLanguageChange={handleLanguageChange}
+            onExit={handleExit}
+          />
+        );
       case 'license-input':
         return (
-          <LicensePlateInput 
+          <LicensePlateInput
             onNext={handleNext}
             country={country}
             initialPlate={licensePlate}
@@ -155,7 +167,7 @@ export const ParkingKiosk: React.FC = () => {
         return (
           <ArrivalTimeInput
             onNext={handleNext}
-            initialTime={getDefaultArrivalTime()}
+            initialTime={arrivalTime}
             language={language}
             onLanguageChange={handleLanguageChange}
             onExit={handleExit}
@@ -166,7 +178,8 @@ export const ParkingKiosk: React.FC = () => {
         return (
           <PaymentSelection
             licensePlate={licensePlate}
-            duration={parkingDuration}
+            country={country}
+            arrivalTime={arrivalTime}
             cost={totalCost}
             onNext={handleNext}
             language={language}
@@ -176,17 +189,47 @@ export const ParkingKiosk: React.FC = () => {
           />
         );
       case 'card-payment':
-        return <CardPayment onNext={handleNext} language={language} onLanguageChange={handleLanguageChange} onExit={handleExit} onBack={handleBack} />;
-      case 'thank-you':
-        return <ThankYou onRestart={() => setCurrentStep('main-menu')} language={language} onLanguageChange={handleLanguageChange} onExit={handleExit} />;
+        return (
+          <CardPayment
+            onNext={handleNext}
+            language={language}
+            onLanguageChange={handleLanguageChange}
+            onExit={handleExit}
+            onBack={handleBack}
+          />
+        );
+        case 'thank-you':
+          return (
+            <ThankYou
+              onRestart={handleRestart}
+              language={language}
+              onLanguageChange={handleLanguageChange}
+              onExit={handleExit}
+            />
+          );
       default:
-        return <MainMenu onNext={handleNext} language={language} onLanguageChange={handleLanguageChange} onExit={handleExit} />;
+        return (
+          <MainMenu
+            onNext={handleNext}
+            language={language}
+            onLanguageChange={handleLanguageChange}
+            onExit={handleExit}
+          />
+        );
     }
+  };
+
+  const handleRestart = () => {
+    setCurrentStep('main-menu');
+    setLicensePlate('');
+    setCountry('IT');
+    setArrivalTime(getDefaultArrivalTime());
+    setLanguage('de');
   };
 
   return (
     <div className="min-h-screen bg-machine-bg flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-xl h-[700px] max-h-[90vh] flex flex-col justify-between bg-white rounded-3xl shadow-kiosk overflow-hidden">
         {renderStep()}
       </div>
       {(scannedPlate && currentStep !== 'entry-animation' && currentStep !== 'landing') && (

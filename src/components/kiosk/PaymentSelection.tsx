@@ -2,12 +2,15 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { CreditCard, Coins } from 'lucide-react';
 import { KioskHeader } from './KioskHeader';
+import { LicensePlateDisplay } from './LicensePlateDisplay';
+import { KioskFooter } from './KioskFooter';
 
 type Language = 'de' | 'it';
 
 interface PaymentSelectionProps {
   licensePlate: string;
-  duration: { hours: number; minutes: number };
+  country: string;
+  arrivalTime: Date | string; // Accept both Date and string
   cost: number;
   onNext: (step: 'card-payment') => void;
   language: Language;
@@ -35,9 +38,22 @@ const translations = {
   }
 };
 
+function getDurationParts(arrivalInput: Date | string, now: Date) {
+  // Always convert arrivalInput to Date
+  const arrival = typeof arrivalInput === 'string' ? new Date(arrivalInput) : arrivalInput;
+  if (!(arrival instanceof Date) || isNaN(arrival.getTime())) return { hours: 0, minutes: 0 };
+  let ms = now.getTime() - arrival.getTime();
+  ms = Math.max(ms, 0); // Prevent negative
+  const totalMinutes = Math.floor(ms / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return { hours, minutes };
+}
+
 export const PaymentSelection: React.FC<PaymentSelectionProps> = ({
   licensePlate,
-  duration,
+  country,
+  arrivalTime,
   cost,
   onNext,
   language,
@@ -46,43 +62,40 @@ export const PaymentSelection: React.FC<PaymentSelectionProps> = ({
   onBack
 }) => {
   const t = translations[language];
+  const now = new Date();
+  const { hours, minutes } = getDurationParts(arrivalTime, now);
+
   return (
-    <div className="bg-gradient-kiosk rounded-3xl shadow-kiosk animate-fade-in-up">
-      <KioskHeader 
-        showBack 
+    <div className="h-full flex flex-col animate-fade-in-up">
+      <KioskHeader
+        showBack
         onBack={onBack}
-        language={language} 
+        language={language}
         onLanguageChange={onLanguageChange}
         onExit={onExit}
       />
-      
-      <div className="px-8 pb-8">
+      <div className="px-8 pb-8 text-center flex-1 flex flex-col justify-center">
         <div className="text-center mb-8">
-          {/* License plate styled like European plate */}
-          <div className="bg-white border-4 border-gray-800 rounded-lg p-4 mx-auto max-w-sm shadow-lg mb-6">
-            <div className="text-4xl font-mono font-bold text-gray-800">
-              {licensePlate}
-            </div>
+          <div className="mb-6">
+            <LicensePlateDisplay licensePlate={licensePlate} country={country} />
           </div>
-          
           <div className="bg-white rounded-lg p-6 mb-6 shadow-inner">
             <div className="text-xl mb-2">
-              {t.duration} <span className="font-semibold">
-                {duration.hours} {t.hours} {duration.minutes} {t.minutes}
+              {t.duration}{' '}
+              <span className="font-semibold">
+                {hours} {t.hours} {minutes} {t.minutes}
               </span>
             </div>
             <div className="text-5xl font-bold text-primary">
               {cost.toFixed(2)} €
             </div>
           </div>
-          
           <h2 className="text-xl text-accent mb-8">
             {t.selectPayment}
           </h2>
         </div>
-        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Button 
+          <Button
             variant="default"
             size="lg"
             className="h-32 bg-gradient-button hover:bg-accent/90 shadow-button text-xl font-semibold"
@@ -93,8 +106,7 @@ export const PaymentSelection: React.FC<PaymentSelectionProps> = ({
               <span>{t.cardPayment}</span>
             </div>
           </Button>
-          
-          <Button 
+          <Button
             variant="default"
             size="lg"
             className="h-32 bg-gradient-button hover:bg-accent/90 shadow-button text-xl font-semibold opacity-50"
@@ -107,6 +119,8 @@ export const PaymentSelection: React.FC<PaymentSelectionProps> = ({
           </Button>
         </div>
       </div>
+      {/* Footer always at the bottom */}
+      <KioskFooter language={language} />
     </div>
   );
 };

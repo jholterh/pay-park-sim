@@ -1,5 +1,5 @@
 import React from 'react';
-import parkingMachine from '@/assets/parking-machine.jpg';
+import parkingMachine from '@/assets/parking-machine.jpeg';
 
 export const LandingAnimation: React.FC = () => {
   return (
@@ -8,7 +8,7 @@ export const LandingAnimation: React.FC = () => {
         <img 
           src={parkingMachine}
           alt="Parking Payment Machine"
-          className="w-auto h-screen max-w-none object-contain"
+          className="max-w-none object-contain"
         />
       </div>
     </div>
