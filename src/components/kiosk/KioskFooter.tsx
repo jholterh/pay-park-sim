@@ -5,7 +5,7 @@ type Language = 'de' | 'it';
 const translations = {
   de: {
     location: 'Mautlüggler See - P1 - Wald',
-    hotline: 'Störungshotline +39 0471 143 05 02'
+    hotline: 'Störungshotline +39 0471 143 0* **'
   },
   it: {
     location: 'Mautlüggler See - P1 - Wald',
