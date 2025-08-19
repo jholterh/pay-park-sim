@@ -46,7 +46,7 @@ export const ThankYou: React.FC<ThankYouProps> = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       onRestart();
-    }, 8000);
+    }, 15000); // Increased from 8000ms to 15000ms (15 seconds)
     return () => clearTimeout(timer);
   }, [onRestart]);
 

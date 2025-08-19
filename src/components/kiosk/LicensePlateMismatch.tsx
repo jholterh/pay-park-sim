@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { ChevronDown } from 'lucide-react';
 import { KioskHeader } from './KioskHeader';
 import { LicensePlateDisplay } from './LicensePlateDisplay';
 import { KioskFooter } from './KioskFooter';
@@ -10,7 +11,7 @@ interface LicensePlateMismatchProps {
   licensePlate: string;
   scannedPlate: string;
   country: string;
-  onNext: (step: 'arrival-time') => void;
+  onNext: (step: 'arrival-time', data?: { country?: string }) => void;
   onBack: () => void;
   language: Language;
   onLanguageChange: (language: Language) => void;
@@ -32,6 +33,13 @@ const translations = {
   },
 };
 
+const countries = [
+  { code: 'IT', name: 'Italien', flag: '🇮🇹', flagName: 'Italia' },
+  { code: 'DE', name: 'Deutschland', flag: '🇩🇪', flagName: 'Germania' },
+  { code: 'AT', name: 'Österreich', flag: '🇦🇹', flagName: 'Austria' },
+  { code: 'CH', name: 'Schweiz', flag: '🇨🇭', flagName: 'Svizzera' }
+];
+
 export const LicensePlateMismatch: React.FC<LicensePlateMismatchProps> = ({
   licensePlate,
   scannedPlate,
@@ -42,7 +50,15 @@ export const LicensePlateMismatch: React.FC<LicensePlateMismatchProps> = ({
   onLanguageChange,
   onExit,
 }) => {
+  const [selectedCountry, setSelectedCountry] = useState(country);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const t = translations[language];
+  const currentCountry = countries.find(c => c.code === selectedCountry) || countries[0];
+
+  const handleCountrySelect = (countryCode: string) => {
+    setSelectedCountry(countryCode);
+    setShowCountryDropdown(false);
+  };
 
   return (
     <div className="h-full flex flex-col animate-fade-in-up">
@@ -57,7 +73,33 @@ export const LicensePlateMismatch: React.FC<LicensePlateMismatchProps> = ({
       <div className="px-8 pb-8 text-center flex-1 flex flex-col justify-center">
         <h2 className="text-2xl font-bold text-accent mb-8">{t.title}</h2>
         <div className="flex flex-col items-center gap-4 mb-6">
-          <LicensePlateDisplay licensePlate={licensePlate} country={country} />
+          <div className="flex items-center gap-4">
+            <LicensePlateDisplay licensePlate={licensePlate} country={selectedCountry} />
+            <div className="relative">
+              <Button
+                variant="outline"
+                className="h-12 px-4 flex items-center gap-2"
+                onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+              >
+                <span className="text-2xl">{currentCountry.flag}</span>
+                <ChevronDown className="w-4 h-4" />
+              </Button>
+              {showCountryDropdown && (
+                <div className="absolute top-full mt-1 left-0 bg-white border rounded-lg shadow-lg z-50 min-w-[200px]">
+                  {countries.map((country) => (
+                    <button
+                      key={country.code}
+                      onClick={() => handleCountrySelect(country.code)}
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-secondary w-full text-left"
+                    >
+                      <span className="text-xl">{country.flag}</span>
+                      <span>{language === 'de' ? country.name : country.flagName}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
           <div className="w-full max-w-md mx-auto mt-4">
             <div className="bg-orange-100 border border-orange-400 text-orange-800 text-base font-semibold rounded-lg px-4 py-3 shadow mt-2 flex items-center">
               <span className="text-3xl font-bold text-orange-500 mr-4 ml-1">!</span>
@@ -77,7 +119,7 @@ export const LicensePlateMismatch: React.FC<LicensePlateMismatchProps> = ({
             variant="outline"
             size="lg"
             className="w-40 h-14 text-lg"
-            onClick={() => onNext('arrival-time')}
+            onClick={() => onNext('arrival-time', { country: selectedCountry })}
           >
             {t.continue} →
           </Button>

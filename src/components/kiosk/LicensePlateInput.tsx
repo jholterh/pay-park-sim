@@ -148,9 +148,9 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
 
   const germanKeyboard = [
     ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'DELETE'],
-    ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P'],
-    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['Y', 'X', 'C', 'V', 'B', 'N', 'M', '-', 'SPACE']
+    ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö'],
+    ['Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Ä', '-', 'SPACE']
   ];
 
   const italianKeyboard = [
@@ -172,37 +172,38 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
         onExit={onExit}
       />
 
-      <div className="px-2 sm:px-8 pb-4 sm:pb-8 text-center flex-1 flex flex-col justify-center w-full">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-accent mb-4">{t.title}</h2>
+      <div className="px-4 pb-4 text-center flex-1 flex flex-col justify-center w-full">
+        <div className="text-center mb-6">
+          <h2 className="text-lg sm:text-2xl font-bold text-accent mb-4">{t.title}</h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mb-6 w-full">
             {/* Step 1 - Country Selection */}
             <div className="text-center w-full sm:w-auto">
-              <div className="text-lg font-bold mb-2">{t.step1}</div>
+              <div className="text-sm sm:text-lg font-bold mb-2">{t.step1}</div>
               <div className="relative w-full flex justify-center">
                 <Button
                   variant="outline"
                   className="
-                    w-full max-w-xs sm:w-64 sm:h-16 h-14
-                    text-base flex items-center gap-2 sm:gap-3
+                    w-full max-w-[200px] sm:max-w-xs sm:w-64 
+                    h-12 sm:h-16
+                    text-sm sm:text-base flex items-center gap-2 sm:gap-3
                     justify-center
                   "
                   onClick={() => setShowCountryDropdown(!showCountryDropdown)}
                 >
-                  <span className="text-2xl">{currentCountry.flag}</span>
-                  <span className="font-medium">{t.changeCountry}</span>
-                  <ChevronDown className="w-5 h-5" />
+                  <span className="text-lg sm:text-2xl">{currentCountry.flag}</span>
+                  <span className="font-medium text-xs sm:text-base">{t.changeCountry}</span>
+                  <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
                 {showCountryDropdown && (
-                  <div className="absolute top-full mt-1 left-0 right-0 bg-white border rounded-lg shadow-lg z-50 w-full max-w-xs sm:max-w-sm mx-auto">
+                  <div className="absolute top-full mt-1 left-0 right-0 bg-white border rounded-lg shadow-lg z-50 w-full max-w-[200px] sm:max-w-xs mx-auto">
                     {countries.map((country) => (
                       <button
                         key={country.code}
                         onClick={() => handleCountrySelect(country.code)}
                         className="flex items-center gap-3 px-4 py-3 hover:bg-secondary w-full text-left"
                       >
-                        <span className="text-xl">{country.flag}</span>
-                        <span>{language === 'de' ? country.name : country.flagName}</span>
+                        <span className="text-lg sm:text-xl">{country.flag}</span>
+                        <span className="text-sm sm:text-base">{language === 'de' ? country.name : country.flagName}</span>
                       </button>
                     ))}
                   </div>
@@ -211,16 +212,16 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
             </div>
             {/* Step 2 - Plate Input */}
             <div className="text-center w-full sm:w-auto">
-              <div className="text-lg font-bold mb-2">{t.step2}</div>
+              <div className="text-sm sm:text-lg font-bold mb-2">{t.step2}</div>
                 <Input
                   ref={inputRef}
                   value={plate}
                   onChange={handleInputChange}
                   onSelect={handleInputSelect}
                   className="
-                    w-full max-w-xs sm:w-64
-                    h-14 sm:h-16
-                    text-xl sm:text-2xl
+                    w-full max-w-[200px] sm:max-w-xs sm:w-64
+                    h-12 sm:h-16
+                    text-lg sm:text-2xl
                     text-center font-mono border-2 border-accent
                   "
                   placeholder={selectedCountry === 'IT' ? 'AB123CD' : 'AB-123-CD'}
@@ -233,9 +234,9 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
         </div>
 
         {showProposal ? (
-          <div className="flex flex-col items-center justify-center h-72">
+          <div className="flex flex-col items-center justify-center h-64 sm:h-72">
             <div className="flex flex-col items-center">
-              <span className="mb-2 text-lg font-semibold text-accent">{t.proposal}</span>
+              <span className="mb-2 text-base sm:text-lg font-semibold text-accent">{t.proposal}</span>
               <div className="relative flex items-center">
                 <button
                   onClick={handleProposalClick}
@@ -245,35 +246,36 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
                   <LicensePlateDisplay
                     licensePlate={demoPlate}
                     country={selectedCountry}
-                    className="scale-90 min-w-[180px] max-w-[260px]"
+                    className="scale-75 sm:scale-90 min-w-[150px] sm:min-w-[180px] max-w-[220px] sm:max-w-[260px]"
                   />
                 </button>
                 <button
                   onClick={handleDismissProposal}
                   className="
-                    ml-6
+                    ml-4 sm:ml-6
                     flex
                     items-center
                     justify-center
                     text-white
-                    text-5xl
+                    text-3xl sm:text-5xl
                     bg-red-600
                     rounded-full
                     shadow-lg
-                    w-16 h-16
+                    w-12 h-12 sm:w-16 sm:h-16
                     hover:bg-red-700
                     focus:outline-none
                     transition
-                    border-4 border-white
-                    absolute right-[-4.5rem] top-1/2 -translate-y-1/2
+                    border-2 sm:border-4 border-white
+                    absolute right-[-3rem] sm:right-[-4.5rem] top-1/2 -translate-y-1/2
                     z-10
                   "
                   aria-label="Dismiss proposal"
                 >
-                  <X size={40} />
+                  <X size={28} className="sm:hidden" />
+                  <X size={40} className="hidden sm:block" />
                 </button>
               </div>
-              <div className="mt-3 text-base text-gray-600 font-medium">
+              <div className="mt-3 text-sm sm:text-base text-gray-600 font-medium">
                 {language === 'de'
                   ? 'Tippen Sie auf das Kennzeichen oder das X'
                   : 'Tocca la targa o la X'}
@@ -282,16 +284,18 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
           </div>
         ) : (
           <>
-            <div className="mb-6">
+            <div className="mb-4 sm:mb-6">
               {currentKeyboard.map((row, rowIndex) => (
-                <div key={rowIndex} className="flex justify-center gap-1 sm:gap-2 mb-2">
+                <div key={rowIndex} className="flex justify-center gap-1 sm:gap-2 mb-1 sm:mb-2">
                   {row.map((key) => (
                     <Button
                       key={key}
                       variant={key >= '0' && key <= '9' ? 'default' : 'secondary'}
-                      className={`w-10 h-10 sm:w-14 sm:h-14 font-semibold text-base sm:text-lg ${
-                        key >= '0' && key <= '9' ? 'bg-blue-900 hover:bg-blue-800 text-white' : ''
-                      }`}
+                      className={`
+                        w-8 h-8 sm:w-10 sm:h-10 md:w-14 md:h-14 
+                        font-semibold text-xs sm:text-sm md:text-lg 
+                        ${key >= '0' && key <= '9' ? 'bg-blue-900 hover:bg-blue-800 text-white' : ''}
+                      `}
                       onClick={() => handleKeyPress(key)}
                     >
                       {key === 'DELETE' ? '⌫' : key === 'SPACE' ? '␣' : key}
@@ -303,7 +307,7 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
             <div className="text-center">
               <Button
                 size="lg"
-                className="w-full sm:w-48 h-14 sm:h-16 text-lg sm:text-xl font-semibold bg-gradient-primary"
+                className="w-full sm:w-48 h-12 sm:h-16 text-base sm:text-xl font-semibold bg-gradient-primary"
                 disabled={!isValidPlate}
                 onClick={() => onNext('license-confirm', { licensePlate: plate, country: selectedCountry })}
               >

@@ -78,6 +78,23 @@ export const ParkingKiosk: React.FC = () => {
       if (data.country) setCountry(data.country);
       if (data.arrivalTime) setArrivalTime(data.arrivalTime);
     }
+    
+    // Special handling for license plate confirmation
+    if (step === 'license-confirm' && data?.licensePlate) {
+      const enteredPlate = data.licensePlate;
+      const normalizedEntered = enteredPlate.replace(/-/g, '').toUpperCase();
+      const normalizedScanned = scannedPlate.replace(/-/g, '').toUpperCase();
+      
+      if (normalizedEntered === normalizedScanned) {
+        // Plates match - go to confirmation
+        setCurrentStep('license-confirm');
+      } else {
+        // Plates don't match - go to mismatch page
+        setCurrentStep('license-mismatch');
+      }
+      return;
+    }
+    
     setCurrentStep(step);
   };
 
