@@ -35,9 +35,8 @@ export const EntryAnimation: React.FC<EntryAnimationProps> = ({ onComplete }) =>
             <div className="absolute top-2 right-8 w-8 h-4 bg-blue-300 rounded-sm"></div>
             {/* License plate */}
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-20 h-6 bg-white border-2 border-gray-800 rounded-sm flex items-center justify-center relative">
+              <div className="absolute -top-1 -left-1 text-xs">🇮🇹</div>
               <span className="text-xs font-bold text-gray-800">{demoPlate}</span>
-              {/* Italian flag on license plate */}
-              <div className="absolute -top-1 -right-1 text-xs">🇮🇹</div>
             </div>
             {/* Wheels */}
             <div className="absolute -bottom-1 left-4 w-6 h-6 bg-gray-800 rounded-full"></div>

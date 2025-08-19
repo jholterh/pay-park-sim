@@ -146,21 +146,45 @@ export const LicensePlateInput: React.FC<LicensePlateInputProps> = ({
     setShowCountryDropdown(false);
   };
 
-  const germanKeyboard = [
-    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'DELETE'],
-    ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P', 'Ü'],
-    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ö'],
-    ['Y', 'X', 'C', 'V', 'B', 'N', 'M', 'Ä', '-', 'SPACE']
-  ];
+  const getKeyboard = () => {
+    const germanSpecialChars = ['DE', 'AT', 'CH'].includes(selectedCountry);
+    
+    if (language === 'de') {
+      // German QWERTZ layout
+      const baseKeyboard = [
+        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'DELETE'],
+        ['Q', 'W', 'E', 'R', 'T', 'Z', 'U', 'I', 'O', 'P'],
+        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+        ['Y', 'X', 'C', 'V', 'B', 'N', 'M', '-', 'SPACE']
+      ];
+      
+      if (germanSpecialChars) {
+        baseKeyboard[1].push('Ü');
+        baseKeyboard[2].push('Ö');
+        baseKeyboard[3].splice(-2, 0, 'Ä');
+      }
+      
+      return baseKeyboard;
+    } else {
+      // Italian QWERTY layout
+      const baseKeyboard = [
+        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'DELETE'],
+        ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+        ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+        ['Z', 'X', 'C', 'V', 'B', 'N', 'M', '-', 'SPACE']
+      ];
+      
+      if (germanSpecialChars) {
+        baseKeyboard[1].push('Ü');
+        baseKeyboard[2].push('Ö');
+        baseKeyboard[3].splice(-2, 0, 'Ä');
+      }
+      
+      return baseKeyboard;
+    }
+  };
 
-  const italianKeyboard = [
-    ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'DELETE'],
-    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', '-', 'SPACE']
-  ];
-
-  const currentKeyboard = language === 'de' ? germanKeyboard : italianKeyboard;
+  const currentKeyboard = getKeyboard();
 
   return (
     <div className="h-full flex flex-col animate-fade-in-up">
